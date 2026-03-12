@@ -21,7 +21,7 @@ class TalentBridgeApp extends StatelessWidget {
   }
 }
 
-/// SPLASH SCREEN
+/// SPLASH SCREEN with white to blue gradient transition
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -29,10 +29,29 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _gradientAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    // Setup animation controller for gradient transition
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    // Create gradient animation
+    _gradientAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    // Start the animation
+    _animationController.forward();
+
     _navigateToLogin();
   }
 
@@ -49,16 +68,44 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF1FA2FF), Color(0xFF12D8FA), Color(0xFF1FD1A5)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AnimatedBuilder(
+        animation: _gradientAnimation,
+        builder: (context, child) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.lerp(
+                    Colors.white,
+                    const Color(0xFF1FA2FF),
+                    _gradientAnimation.value,
+                  )!,
+                  Color.lerp(
+                    Colors.white,
+                    const Color(0xFF12D8FA),
+                    _gradientAnimation.value,
+                  )!,
+                  Color.lerp(
+                    Colors.white,
+                    const Color(0xFF1FD1A5),
+                    _gradientAnimation.value,
+                  )!,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: child,
+          );
+        },
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
