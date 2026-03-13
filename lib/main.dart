@@ -21,7 +21,7 @@ class TalentBridgeApp extends StatelessWidget {
   }
 }
 
-/// SPLASH SCREEN with white to blue gradient transition
+/// SPLASH SCREEN with blue gradient background and centered logo
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -32,21 +32,27 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _gradientAnimation;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // Setup animation controller for gradient transition
+    // Setup animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
 
-    // Create gradient animation
-    _gradientAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    // Create fade animation
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+
+    // Create scale animation
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
 
     // Start the animation
@@ -56,9 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   _navigateToLogin() async {
-    await Future.delayed(
-      const Duration(seconds: 3),
-    ); // Show splash for 3 seconds
+    await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -76,95 +80,97 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: _gradientAnimation,
-        builder: (context, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.lerp(
-                    Colors.white,
-                    const Color(0xFF1FA2FF),
-                    _gradientAnimation.value,
-                  )!,
-                  Color.lerp(
-                    Colors.white,
-                    const Color(0xFF12D8FA),
-                    _gradientAnimation.value,
-                  )!,
-                  Color.lerp(
-                    Colors.white,
-                    const Color(0xFF1FD1A5),
-                    _gradientAnimation.value,
-                  )!,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: child,
-          );
-        },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1FA2FF), Color(0xFF12D8FA), Color(0xFF1FD1A5)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Animated logo
-              TweenAnimationBuilder(
-                tween: Tween<double>(begin: 0.0, end: 1.0),
-                duration: const Duration(seconds: 2),
-                curve: Curves.elasticOut,
-                builder: (context, double value, child) {
-                  return Transform.scale(scale: value, child: child);
-                },
-                child: Image.asset(
-                  "assets/icon.png",
-                  height: 150,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Animated logo with fade and scale
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Image.asset(
+                      "assets/icon.png",
                       height: 150,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 20,
-                            spreadRadius: 5,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.link,
-                        size: 80,
-                        color: Color(0xFF1FA2FF),
-                      ),
-                    );
-                  },
+                          child: const Icon(
+                            Icons.link,
+                            size: 80,
+                            color: Color(0xFF1FA2FF),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                "TalentBridge",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
+                const SizedBox(height: 30),
+                // Animated text
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: const Column(
+                    children: [
+                      Text(
+                        "TalentBridge",
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 2,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10,
+                              color: Colors.black26,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Connecting Talent to Opportunity",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Connecting Talent to Opportunity",
-                style: TextStyle(color: Colors.white70, fontSize: 16),
-              ),
-              const SizedBox(height: 50),
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ],
+                const SizedBox(height: 50),
+                // Loading indicator
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -203,6 +209,70 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
+  }
+
+  // Improved email validation function
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+
+    // Trim the value to remove leading/trailing spaces
+    value = value.trim();
+
+    // Check if email starts with a hyphen
+    if (value.startsWith('-')) {
+      return 'Email cannot start with a hyphen';
+    }
+
+    // Check if email contains invalid patterns
+    if (value.contains('..')) {
+      return 'Email cannot contain consecutive dots';
+    }
+
+    if (value.contains('.@') || value.contains('@.')) {
+      return 'Email contains invalid character placement';
+    }
+
+    // Check for multiple @ symbols
+    if (value.split('@').length > 2) {
+      return 'Email cannot contain multiple @ symbols';
+    }
+
+    // Check for valid characters in local part (before @)
+    final parts = value.split('@');
+    if (parts.length == 2) {
+      final localPart = parts[0];
+      final domainPart = parts[1];
+
+      // Local part should not start or end with special characters
+      if (localPart.startsWith('.') || localPart.endsWith('.')) {
+        return 'Local part cannot start or end with a dot';
+      }
+
+      // Check for valid domain
+      if (domainPart.startsWith('-') || domainPart.endsWith('-')) {
+        return 'Domain cannot start or end with a hyphen';
+      }
+
+      if (domainPart.contains('..')) {
+        return 'Domain cannot contain consecutive dots';
+      }
+    }
+
+    // Comprehensive email regex that ensures:
+    // 1. Local part starts with alphanumeric or underscore (not hyphen or dot)
+    // 2. No consecutive dots
+    // 3. Valid domain structure
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9]([a-zA-Z0-9._%-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$',
+    );
+
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+
+    return null;
   }
 
   @override
@@ -301,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 30),
 
-                          // Email field
+                          // Email field with improved validation
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -319,18 +389,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: 2,
                                 ),
                               ),
+                              // Add helper text to guide users
+                              helperText:
+                                  "Email must start with a letter or number",
+                              helperStyle: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 12,
+                              ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!RegExp(
-                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                              ).hasMatch(value)) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
+                            validator: _validateEmail,
                           ),
                           const SizedBox(height: 20),
 
@@ -549,7 +616,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-/// HOMEPAGE (Original code with slight modifications)
+/// HOMEPAGE
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
