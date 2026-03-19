@@ -22,10 +22,10 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon.png"
+  image_path: "assets/T.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/icon.png
+    - assets/T.png
