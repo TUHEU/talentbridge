@@ -144,7 +144,7 @@ class _SplashScreenState extends State<SplashScreen>
                       child: ScaleTransition(
                         scale: _scaleAnimation,
                         child: Image.asset(
-                          "assets/icon.png",
+                          "assets/T.png",
                           height: 150,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -338,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              "assets/icon.png",
+                              "assets/T.png",
                               height: 80,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
@@ -1702,7 +1702,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   Center(
                     child: Image.asset(
-                      "assets/icon.png",
+                      "assets/T.png",
                       height: 100,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
