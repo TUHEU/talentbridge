@@ -1,31 +1,69 @@
-name: talentbridge
-description: "A new Flutter project."
+name: talent_bridge
+description: Connect Talent. Build Futures. — AI-powered career development app.
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.0
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  image_picker: ^1.2.1
+
+  # State & DI
+  provider: ^6.1.2
+  get_it: ^9.2.1
+
+  # Network
+  dio: ^5.4.3+1
+  connectivity_plus: ^7.1.1
+
+  # Storage
+  shared_preferences: ^2.3.1
+  flutter_secure_storage: ^10.3.1
+
+  # UI
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  lottie: ^3.1.2
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^8.1.0
+  fl_chart: ^1.2.0
+  dotted_border: ^3.1.0
+
+  # Media
+  image_picker: ^1.1.2
+  file_picker: ^12.0.0-beta.7
+
+  # Utilities
+  intl: ^0.20.2
+  timeago: ^3.6.1
+  url_launcher: ^6.3.0
+  share_plus: ^13.1.0
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.4
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/T.png"
+  mockito: ^5.4.4
+  build_runner: ^2.4.9
 
 flutter:
   uses-material-design: true
-
   assets:
-    - assets/T.png
+    - assets/images/
+    - assets/animations/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
